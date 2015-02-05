@@ -45,8 +45,8 @@ signature Stack = sig
   val empty   : $\alpha$ Stack
   val isEmpty : $\alpha$ Stack $\rightarrow$ bool
   val cons    : $\alpha \times \alpha$ Stack $\rightarrow$ $\alpha$ Stack
-  val head    : $\alpha$ Stack $\rightarrow \alpha$ Stack /*$\mbox{ возбуждает EMPTY для пустого стека }$*/
-  val tail    : $\alpha$ Stack $\rightarrow \alpha$ Stack /*$\mbox{ возбуждает EMPTY для пустого стека }$*/
+  val head    : $\alpha$ Stack $\rightarrow \alpha$ Stack /*$\mbox{ бросает EMPTY для пустого стека }$*/
+  val tail    : $\alpha$ Stack $\rightarrow \alpha$ Stack /*$\mbox{ бросает EMPTY для пустого стека }$*/
 end
 \end{lstlisting}
 % TODO: Эта херня пихает курсив, когда у меня камлёвые комментарии. Разобраться.
@@ -420,7 +420,7 @@ signature FINITEMAP = sig
   type $\alpha$ Map
   val empty : $\alpha$ Map
   val bind  : Key $\times$ $\alpha$ $\times$ $\alpha$ Map $\rightarrow \alpha$ Map
-  val lookup: Key $\times$ $\alpha$ Map $\rightarrow \alpha$ /*$\mbox{ возбуждает NOTFOUND, если ключ не найден }$*/
+  val lookup: Key $\times$ $\alpha$ Map $\rightarrow \alpha$ /*$\mbox{ бросает NOTFOUND, если ключ не найден }$*/
 end
 \end{lstlisting}
   \caption{Сигнатура для конечных отображений.}

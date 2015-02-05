@@ -676,7 +676,19 @@ $$
 
 \begin{figure}
   \centering
-
+\begin{lstlisting}  
+signature CATENABLELIST = sig 
+  type Cat
+  exception EMPTY
+  val empty   : $\alpha$ Cat
+  val isEmpty : $\alpha$ Cat $\to$ bool
+  val cons    : $\alpha$ $\times$ $\alpha$ Cat $\to$ $\alpha$ Cat
+  val snoc    : $\alpha$ Cat $\times$ $\alpha$ $\to$ $\alpha$ Cat
+  val ++      : $\alpha$ Cat $\times$ $\alpha$ Cat $\to$ $\alpha$ Cat
+  val head    : $\alpha$ Cat $\to$ $\alpha$      /* $\mbox{бросает исключение } EMPTY \mbox{ когда список пуст } $*/
+  val tail    : $\alpha$ Cat $\to$ $\alpha$ Cat  /* $\mbox{бросает исключение } EMPTY \mbox{ когда список пуст } $*/
+end
+\end{lstlisting}  
   \caption{Сигнатура списков с конкатенацией.}
   \label{fig:10.3}
 \end{figure}
@@ -788,8 +800,31 @@ $O(1)$ времени, она является естественным канд
 
 \begin{figure}
   \centering
+\begin{lstlisting}[mathescape=true,language=ml]
+functor CatenableList (structure Q : QUEUE) : CATENABLELIST = struct
+  datatype $\alpha$ Cat = Empty | Cat of $\alpha \times \alpha$ Cat susp Q.Queue
+  exception EMPTY
+  val empty = Empty
+  fun isEmpty Empty = true
+    | isEmpty (Cat q) = false
+    
+  fun link (Cat (x,q),s) = Cat (x, Q.snoc (q,s))
+  fun linkAll q = let val $\textdollar$t = Q.head q
+		     val q' = Q.tail q
+		  in if Q.isEmpty then t else link (t, $\textdollar$linkAll q') end
 
-  \caption{Списки с конкатенацией.}
+  fun xs $\concat$ Empty = xs
+    | Empty $\concat$ xs = xs
+    | xs $\concat$ ys = link (xs,$\textdollar$ys)
+  fun cons (x,xs) = Cat (x, Q.empty) $\concat$ xs
+  fun snoc (xs,x) = xs $\concat$ Cat (x, Q.empty)
+  fun head Empty = raise EMPTY
+    | head (Cat (x,_)) = x
+  fun tail Empty = raise EMPTY
+    | tail (Cat (x,q)) = if Q.isEmpty then Empty else linkAll q
+end 
+\end{lstlisting}
+  \caption{Списки с конкатенацией}
   \label{fig:10.6}
 \end{figure}
 
