@@ -10,19 +10,24 @@
 \usepackage{tikz}
 \usetikzlibrary{trees}
 
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\geometry{left=1in}
+
 \usepackage[arrow,curve,matrix,frame]{xy}
 
 %% See http://www.haskell.org/haskellwiki/Literate_programming for details
 \lstloadlanguages{Haskell}
 \lstnewenvironment{code}
-    {\lstset{}%
+    {\lstset{}
       \csname lst@SetFirstLabel\endcsname}
     {\csname lst@SaveFirstLabel\endcsname}
     \lstset{
       basicstyle=\small,
       flexiblecolumns=false,
       basewidth={0.5em,0.45em},
-      literate={+}{{$+$}}1 {/}{{$/$}}1 {*}{{$*$}}1 {=}{{$=$}}1
+      literate={+}{{$+$}}1 {/}{{$/$}}1 
+	       %{*}{{$*$}}1                      % commented beacuse it break ML comments
+	       {=}{{$=$}}1
                {>}{{$>$}}1 {<}{{$<$}}1 {\\}{{$\lambda$}}1
                {\\\\}{{\char`\\\char`\\}}1
                {->}{{$\rightarrow$}}2 {>=}{{$\geq$}}2 {<-}{{$\leftarrow$}}2
