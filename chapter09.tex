@@ -88,12 +88,44 @@ $w_i = 2^i$ и $D_i = \{\mathtt{0}, \mathtt{1}, \mathtt{2}\}$. Тогда
 
 \begin{figure}
   \centering
+\begin{lstlisting}[language=ML, commentstyle=\color{blue} ]
+structure Dense = struct
+  datatype Digit = Zero | One
+  type Nat = Digit list  (* $\mbox{ от младших разрядов к старшим, без лишних нулей } $*)
+  
+  fun inc [] = [One]
+     | inc (Zero :: ds) = One ::ds
+     | inc ds(One ::) = Zero :: inc ds (*$\mbox{ перенос } $*)
+  fun dec [One] = []
+    | dec (One :: ds) = Zero :: ds
+    | dec (Zero :: ds) = One :: dec ds (*$\mbox{ заимствование } $*)
+  fun add (ds,[]) = ds
+    | add ([],ds) = ds
+    | add (d::ds_1, Zero ::ds_2) = d :: add (ds_1,ds_2)
+    | add (Zero :: ds_1, d::ds_2)= d :: add (ds_1,ds_2)
+    | add (One :: ds_1, One ::ds_2) = Zero :: inc (add (ds_1,ds_2))  (*$\mbox{ перенос } $*)
+end 
 
-  \mbox{возрастающий порядок по старшинству}\\
-  \mbox{перенос}\\
-  \mbox{занятие}\\
-  \mbox{перенос}\\
-  \mbox{возрастающий порядок весов, каждый из которых степень двойки}\\
+structure SparseByWeight = struct
+  type Nat = int list  (*$\mbox{ веса в возрастающем порядке, каждый --- степеньд войки } $*)
+  
+  (*$\mbox{ добавляем новый вес в список, рекурсия если такой уже присутствует } $*)  
+  fun carry (w,[])=[w]
+    | carry (w, ws as w' :: rest) = if w<w' then w::ws else carry (2*w,rest)
+    
+  (*$\mbox{ занимаем из цифры с весом, рекурсия если такого веса нет } $*)    
+  fun borrow (w,ws as w'::rest) = if w=w' then rest else w:: borrow (2*w,ws)
+  
+  fun inc ws = carry (1,ws)
+  fun dec ws = borrow (1,ws)
+  fun add (ws,[]) = ws
+    | add ([],ws) = ws
+    | add (m as $w_1$ :: $ws_1$, n as $w_2$ :: $ws_2$) = 
+      if $w_1$ < $w_2$ then $w_1$ :: add ($ws_1$,n)
+      else if $w_2$ < $w_1$  then $w_2$ :: add ($ws_2$,m)
+      else carry (2*$w_1$ , add ($ws_1$ ,$ws_2$))
+end
+\end{lstlisting}
 
   \caption{Два представления двоичных чисел.}
   \label{fig:9.1}
